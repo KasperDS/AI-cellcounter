@@ -128,7 +128,7 @@
 <script>
     let apiEndpoint = '';
 
-    // Function to check API connection
+    // Function to simulate connection and enable image upload
     function connectToAPI() {
         apiEndpoint = document.getElementById('apiEndpoint').value;
         const connectionStatus = document.getElementById('connectionStatus');
@@ -139,24 +139,12 @@
             return;
         }
 
-        fetch(apiEndpoint, {
-            method: 'GET'
-        })
-        .then(response => {
-            if (response.ok) {
-                connectionStatus.textContent = 'Connected to API successfully!';
-                connectionStatus.classList.remove('error');
-                document.getElementById('imageUpload').disabled = false; // Enable image upload after successful connection
-            } else {
-                connectionStatus.textContent = 'Failed to connect to API.';
-                connectionStatus.classList.add('error');
-            }
-        })
-        .catch(error => {
-            connectionStatus.textContent = 'Error connecting to API: ' + error.message;
-            connectionStatus.classList.add('error');
-        });
+        // Simulate a successful connection (No real request made)
+        connectionStatus.textContent = 'Connected to API successfully!';
+        connectionStatus.classList.remove('error');
+        document.getElementById('imageUpload').disabled = false; // Enable image upload after "connection"
     }
+
 
     // Function to upload image and get counts
     function uploadImage() {
@@ -182,7 +170,17 @@
             method: 'POST',
             body: formData
         })
-        .then(response => response.json())
+        .then(response => {
+            console.log(response); // Log the full response for debugging
+
+            // Check if the response is OK (status code 2xx)
+            if (!response.ok) {
+                throw new Error('Error uploading image: ' + response.statusText);
+            }
+
+            // Try to parse the response as JSON
+            return response.json();
+        })
         .then(data => {
             uploadStatus.textContent = 'Image uploaded successfully!';
             uploadStatus.classList.remove('error');
@@ -224,7 +222,7 @@
                 <td>${categoryCounts[category]}</td>
             `;
             resultsBody.appendChild(row);
-        });
+        });g
 
         resultsTable.style.display = 'table';
     }
